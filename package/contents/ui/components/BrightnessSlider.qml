@@ -1,7 +1,6 @@
 import QtQml 2.15
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
-//import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PlasmaComponents
 import org.kde.plasma.plasma5support as Plasma5Support
 import "../lib" as Lib
@@ -17,16 +16,10 @@ Item {
 
     property var mainScreen
     property bool disableBrightnessUpdate: true
+    property int selectedDisplay: 0
 
     property bool canTogglePage: false
-
-    property bool glassEffect: false
-    property int cornerRadius: roundedWidget ? 22 : 12
-    property bool mediumSizeSlider: false
-
     property bool flat: false
-    property bool isLongButton: false
-    property bool roundedWidget: false
     property bool showTitle: false
 
     ScreenBrightnessControl {
@@ -43,7 +36,7 @@ Item {
             const [labelRole, brightnessRole, maxBrightnessRole, displayNameRole] = ["label", "brightness", "maxBrightness", "displayName"].map(
                 (roleName) => target.KItemModels.KRoleNames.role(roleName));
 
-            screenBrightnessInfo = [...Array(target.rowCount()).keys()].map((i) => { // for each display index
+            screenBrightnessInfo = [...Array(target.rowCount()).keys()].map((i) => {
                 const modelIndex = target.index(i, 0);
                 return {
                     displayName: target.data(modelIndex, displayNameRole),
@@ -52,7 +45,11 @@ Item {
                     maxBrightness: target.data(modelIndex, maxBrightnessRole),
                 };
             });
-            brightnessControl.mainScreen = screenBrightnessInfo[0];
+            if (selectedDisplay < screenBrightnessInfo.length) {
+                brightnessControl.mainScreen = screenBrightnessInfo[selectedDisplay];
+            } else {
+                brightnessControl.mainScreen = screenBrightnessInfo[0];
+            }
             sliderLoader.active = true;
         }
         function onDataChanged() { update(); }
@@ -63,42 +60,55 @@ Item {
     }
 
     visible: sbControl.isBrightnessAvailable && root.showBrightness
-    
-    Loader {
-        id: sliderLoader
-        active: false
-        sourceComponent: sliderComponent 
+
+    ColumnLayout {
         anchors.fill: parent
+        spacing: 2
+
+        PlasmaComponents.ComboBox {
+            id: displayPicker
+            Layout.fillWidth: true
+            Layout.preferredHeight: 24 * root.scale
+            visible: displayModelConnections.screenBrightnessInfo.length > 1
+            model: displayModelConnections.screenBrightnessInfo.map(d => d.label)
+            currentIndex: brightnessControl.selectedDisplay
+            font.pixelSize: root.smallFontSize
+            onActivated: index => {
+                brightnessControl.selectedDisplay = index;
+                brightnessControl.mainScreen = displayModelConnections.screenBrightnessInfo[index];
+            }
+        }
+
+        Loader {
+            id: sliderLoader
+            active: false
+            sourceComponent: sliderComponent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
     }
 
     Component {
         id: sliderComponent
         Lib.Slider {
-                        
             readonly property int brightnessMin: (mainScreen.maxBrightness > 100 ? 1 : 0)
 
-            // Slider properties
             title: mainScreen.label
             source: "brightness-high-symbolic"
             secondaryTitle: Math.round((mainScreen.brightness / mainScreen.maxBrightness)*100) + "%"
 
             canTogglePage: brightnessControl.canTogglePage
-            glassEffect: brightnessControl.glassEffect
-            cornerRadius: brightnessControl.cornerRadius
-            mediumSizeSlider: brightnessControl.mediumSizeSlider
-            roundedWidget: brightnessControl.roundedWidget
-            
             showTitle: root.brightness_widget_title
             thinSlider: root.brightness_widget_thin
-            flat: root.brightness_widget_flat || brightnessControl.flat // bind to Lib.Card property
-            
+            flat: root.brightness_widget_flat || brightnessControl.flat
+
             from: brightnessMin
             to: mainScreen.maxBrightness
             value: mainScreen.brightness
             stepSize: mainScreen.maxBrightness / 100
-            
+
             onMoved: {
-                sbControl.setBrightness(mainScreen.displayName, value) ;
+                sbControl.setBrightness(mainScreen.displayName, value);
             }
 
             onClicked: {

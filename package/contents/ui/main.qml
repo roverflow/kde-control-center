@@ -13,7 +13,7 @@ PlasmoidItem {
 
     // -- Scale
     property var scale: Plasmoid.configuration.scale * 1 / 100
-    property int fullRepWidth: 380 * scale
+    property int fullRepWidth: 420 * scale
     property int fullRepHeight: 400 * scale
 
     // -- Spacing (8px base grid)
@@ -81,7 +81,7 @@ PlasmoidItem {
     property bool showScreenshot: Plasmoid.configuration.showScreenshot
     property bool showCmd1: Plasmoid.configuration.showCmd1
     property bool showCmd2: Plasmoid.configuration.showCmd2
-    property bool showPercentage: Plasmoid.configuration.showPercentage
+    property bool showPercentage: true
 
     // -- Custom commands
     property string cmdRun1: Plasmoid.configuration.cmdRun1

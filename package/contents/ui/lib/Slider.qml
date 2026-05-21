@@ -81,7 +81,7 @@ Card {
             visible: root.showPercentage
             font.pixelSize: root.smallFontSize
             font.weight: Font.Normal
-            color: root.textMuted
+            color: root.textSecondary
             Layout.alignment: Qt.AlignRight
         }
 

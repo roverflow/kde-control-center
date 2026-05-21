@@ -21,37 +21,37 @@ ColumnLayout {
 
         Components.NetworkBtn {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64 * root.scale
+            Layout.preferredHeight: 80 * root.scale
         }
         Components.BluetoothBtn {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64 * root.scale
+            Layout.preferredHeight: 80 * root.scale
         }
         Components.DndButton {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64 * root.scale
+            Layout.preferredHeight: 80 * root.scale
         }
         Components.KDEConnect {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64 * root.scale
+            Layout.preferredHeight: 80 * root.scale
         }
 
         Components.NightLight {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64 * root.scale
+            Layout.preferredHeight: 80 * root.scale
         }
         Components.ColorSchemeSwitcher {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64 * root.scale
+            Layout.preferredHeight: 80 * root.scale
         }
         Components.ScreenshotBtn {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64 * root.scale
+            Layout.preferredHeight: 80 * root.scale
             visible: root.showScreenshot
         }
         Components.CommandRun {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64 * root.scale
+            Layout.preferredHeight: 80 * root.scale
             visible: root.showCmd1
             icon: root.cmdIcon1
             command: root.cmdRun1
@@ -66,38 +66,23 @@ ColumnLayout {
 
         Components.BrightnessSlider {
             Layout.fillWidth: true
-            Layout.preferredHeight: 32 * root.scale
+            Layout.preferredHeight: 36 * root.scale
         }
         Components.Volume {
             Layout.fillWidth: true
-            Layout.preferredHeight: 32 * root.scale
+            Layout.preferredHeight: 36 * root.scale
         }
     }
 
-    // -- Media Player
-    Components.MediaPlayer {
-        Layout.fillWidth: true
-        Layout.preferredHeight: 64 * root.scale
-        visible: root.showMediaPlayer
-    }
-
-    // -- Footer
+    // -- Power
     RowLayout {
-        id: footer
-        spacing: root.mediumSpacing
         Layout.fillWidth: true
 
-        Components.Battery {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 44 * root.scale
-        }
-        Components.UserAvatar {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 44 * root.scale
-        }
+        Item { Layout.fillWidth: true }
+
         Components.SystemActions {
-            Layout.preferredWidth: 44 * root.scale
-            Layout.preferredHeight: 44 * root.scale
+            Layout.preferredWidth: 36 * root.scale
+            Layout.preferredHeight: 36 * root.scale
         }
     }
 }
