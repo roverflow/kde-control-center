@@ -46,13 +46,13 @@ Card {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: root.smallSpacing + 2
-                spacing: root.smallSpacing + 2
+                anchors.margins: root.mediumSpacing
+                spacing: root.mediumSpacing
 
                 Item {
                     id: iconContainer
-                    Layout.preferredWidth: 18 * root.scale
-                    Layout.preferredHeight: 18 * root.scale
+                    Layout.preferredWidth: 22 * root.scale
+                    Layout.preferredHeight: 22 * root.scale
                     Layout.alignment: Qt.AlignVCenter
                 }
 

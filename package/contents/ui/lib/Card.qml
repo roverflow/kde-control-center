@@ -13,7 +13,7 @@ Rectangle {
     property alias customBgColor: cardBg.color
     property bool flat: false
     property bool noMargins: false
-    property int cornerRadius: 4
+    property int cornerRadius: 8
 
     property var margins: cardBg.anchors
     default property alias content: dataContainer.data

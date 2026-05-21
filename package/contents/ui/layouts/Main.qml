@@ -9,17 +9,10 @@ ColumnLayout {
 
     anchors.fill: parent
     anchors.margins: root.largeSpacing
-    spacing: root.largeSpacing
+    spacing: root.mediumSpacing
 
     // -- Header Bar
     Components.HeaderBar {}
-
-    // -- Separator
-    Rectangle {
-        Layout.fillWidth: true
-        Layout.preferredHeight: 1
-        color: root.borderColor
-    }
 
     // -- Sliders
     ColumnLayout {
@@ -38,13 +31,6 @@ ColumnLayout {
             Layout.fillWidth: true
             Layout.preferredHeight: 48 * root.scale
         }
-    }
-
-    // -- Separator
-    Rectangle {
-        Layout.fillWidth: true
-        Layout.preferredHeight: 1
-        color: root.borderColor
     }
 
     // -- Split-Action Toggle Grid (2 columns)

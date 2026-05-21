@@ -33,7 +33,7 @@ PlasmoidItem {
     property color surfaceColor: "#111111"
     property color surfaceHover: "#222222"
     property color surfaceActive: "#333333"
-    property color borderColor: Qt.rgba(1, 1, 1, 0.08)
+    property color borderColor: Qt.rgba(1, 1, 1, 0.10)
     property color borderStrong: Qt.rgba(1, 1, 1, 0.15)
 
     // -- Text

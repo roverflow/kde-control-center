@@ -14,8 +14,13 @@ import "pages" as Pages
 import "js/funcs.js" as Funcs
 
 
-Item {
+Rectangle {
     id: fullRep
+
+    color: root.themeBgColor
+    border.width: 1
+    border.color: Qt.rgba(1, 1, 1, 0.12)
+    radius: 8
 
     Layout.preferredWidth: root.fullRepWidth
     Layout.preferredHeight: wrapper.implicitHeight
