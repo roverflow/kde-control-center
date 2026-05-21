@@ -38,7 +38,7 @@ Lib.CardButton {
 
     Lib.Icon {
         anchors.fill: parent
-        source: "cup-hot"
+        source: "preferences-desktop-screensaver"
         selected: inhibitionControl.isManuallyInhibited
         sourceColor: "transparent"
     }

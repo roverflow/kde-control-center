@@ -59,7 +59,7 @@ Item {
         function onRowsRemoved() { update(); }
     }
 
-    visible: sbControl.isBrightnessAvailable && root.showBrightness
+    visible: sbControl.isBrightnessAvailable && root.showBrightness && mainScreen !== null && mainScreen !== undefined
 
     ColumnLayout {
         anchors.fill: parent

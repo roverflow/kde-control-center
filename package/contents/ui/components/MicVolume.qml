@@ -13,10 +13,10 @@ Item {
     Layout.fillHeight: true
     visible: sourceAvailable && root.showMicVolume
 
-    property var source: Vol.PreferredDevice.source
-    readonly property bool sourceAvailable: source && !(source && source.name == "auto_null")
+    property var audioSource: Vol.PreferredDevice.source
+    readonly property bool sourceAvailable: audioSource && !(audioSource && audioSource.name == "auto_null")
 
-    onSourceChanged: sliderLoader.active = source ? true : false
+    onAudioSourceChanged: sliderLoader.active = audioSource ? true : false
 
     Loader {
         id: sliderLoader
@@ -33,25 +33,30 @@ Item {
             useIconButton: true
             thinSlider: true
 
-            value: Math.round(source.volume / Vol.PulseAudio.NormalVolume * 100)
-            secondaryTitle: Math.round(source.volume / Vol.PulseAudio.NormalVolume * 100) + "%"
+            value: micControl.audioSource ? Math.round(micControl.audioSource.volume / Vol.PulseAudio.NormalVolume * 100) : 0
+            secondaryTitle: value + "%"
 
-            source: source.muted ? "audio-input-microphone-muted-symbolic" : "audio-input-microphone-symbolic"
+            source: (micControl.audioSource && micControl.audioSource.muted) ? "audio-input-microphone-muted-symbolic" : "audio-input-microphone-symbolic"
 
-            onMoved: micControl.source.volume = value * Vol.PulseAudio.NormalVolume / 100
+            onMoved: {
+                if (micControl.audioSource) {
+                    micControl.audioSource.volume = value * Vol.PulseAudio.NormalVolume / 100
+                }
+            }
 
             onClicked: {
                 var pageHeight = volumePage.contentItemHeight + volumePage.headerHeight;
                 fullRep.togglePage(fullRep.defaultInitialWidth, pageHeight, volumePage);
             }
 
-            property var oldVol: 100 * Vol.PulseAudio.NormalVolume / 100
+            property var oldVol: Vol.PulseAudio.NormalVolume
             onActionButtonClicked: {
+                if (!micControl.audioSource) return
                 if (value != 0) {
-                    oldVol = micControl.source.volume
-                    micControl.source.volume = 0
+                    oldVol = micControl.audioSource.volume
+                    micControl.audioSource.volume = 0
                 } else {
-                    micControl.source.volume = oldVol
+                    micControl.audioSource.volume = oldVol
                 }
             }
         }

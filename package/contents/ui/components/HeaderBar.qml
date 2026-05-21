@@ -14,12 +14,14 @@ Item {
     Layout.fillWidth: true
     Layout.preferredHeight: 32 * root.scale
 
+    readonly property bool hasBattery: batteryPage && batteryPage.batteryControl && batteryPage.batteryControl.hasBatteries
+    readonly property int batteryPercent: hasBattery ? batteryPage.batteryControl.percent : 0
+    readonly property bool batteryPluggedIn: hasBattery ? batteryPage.batteryControl.pluggedIn : false
+
     Plasma5Support.DataSource {
         id: headerExecutable
         engine: "executable"
-        function exec(cmd) {
-            connectSource(cmd)
-        }
+        function exec(cmd) { connectSource(cmd) }
         onNewData: disconnectSource(sourceName)
     }
 
@@ -27,12 +29,11 @@ Item {
         anchors.fill: parent
         spacing: root.smallSpacing
 
-        // Battery indicator
         MouseArea {
             Layout.preferredHeight: parent.height
             Layout.preferredWidth: batteryRow.implicitWidth + root.mediumSpacing * 2
             cursorShape: Qt.PointingHandCursor
-            visible: batteryPage.batteryControl.hasBatteries
+            visible: headerBar.hasBattery
 
             onClicked: {
                 var pageHeight = batteryPage.contentItemHeight + batteryPage.headerHeight;
@@ -47,13 +48,13 @@ Item {
                 BatteryIcon {
                     Layout.preferredWidth: 16 * root.scale
                     Layout.preferredHeight: 16 * root.scale
-                    percent: batteryPage.batteryControl.percent
-                    hasBattery: batteryPage.batteryControl.hasBatteries
-                    pluggedIn: batteryPage.batteryControl.pluggedIn
+                    percent: headerBar.batteryPercent
+                    hasBattery: headerBar.hasBattery
+                    pluggedIn: headerBar.batteryPluggedIn
                 }
 
                 PlasmaComponents.Label {
-                    text: batteryPage.batteryControl.percent + "%"
+                    text: headerBar.batteryPercent + "%"
                     font.pixelSize: root.smallFontSize
                     font.weight: Font.Medium
                     color: root.textPrimary
@@ -63,7 +64,6 @@ Item {
 
         Item { Layout.fillWidth: true }
 
-        // Screenshot
         PlasmaComponents.ToolButton {
             visible: root.showScreenshot
             icon.name: "camera-photo-symbolic"
@@ -78,7 +78,6 @@ Item {
             PlasmaComponents.ToolTip { text: i18n("Screenshot") }
         }
 
-        // Settings
         PlasmaComponents.ToolButton {
             icon.name: "configure"
             icon.width: 16 * root.scale
@@ -89,7 +88,6 @@ Item {
             PlasmaComponents.ToolTip { text: i18n("System Settings") }
         }
 
-        // Lock
         PlasmaComponents.ToolButton {
             icon.name: "system-lock-screen"
             icon.width: 16 * root.scale
@@ -100,7 +98,6 @@ Item {
             PlasmaComponents.ToolTip { text: i18n("Lock Screen") }
         }
 
-        // Power
         PlasmaComponents.ToolButton {
             icon.name: "system-shutdown"
             icon.width: 16 * root.scale

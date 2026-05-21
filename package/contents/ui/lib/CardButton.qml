@@ -46,13 +46,13 @@ Card {
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: root.mediumSpacing
-                spacing: root.mediumSpacing
+                anchors.margins: root.smallSpacing + 2
+                spacing: root.smallSpacing + 2
 
                 Item {
                     id: iconContainer
-                    Layout.preferredWidth: 20 * root.scale
-                    Layout.preferredHeight: 20 * root.scale
+                    Layout.preferredWidth: 18 * root.scale
+                    Layout.preferredHeight: 18 * root.scale
                     Layout.alignment: Qt.AlignVCenter
                 }
 
@@ -77,7 +77,7 @@ Card {
                         Layout.fillWidth: true
                         font.pixelSize: root.smallFontSize
                         font.weight: Font.Normal
-                        elide: Text.ElideRight
+                        elide: Text.ElideMiddle
                         visible: text !== "" && showTitle
                         color: root.textSecondary
                     }

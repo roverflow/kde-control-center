@@ -19,7 +19,7 @@ Lib.CardButton {
         }
     }
 
-    splitAction: false
+    splitAction: true
     isLongButton: true
     visible: root.showPowerProfile && profilesControl.profileChoices.length > 0
 
@@ -41,9 +41,14 @@ Lib.CardButton {
         selected: profilesControl.activeProfile === "performance"
     }
 
-    onClicked: {
+    onToggled: {
         var currentIdx = profiles.indexOf(profilesControl.activeProfile)
         var nextIdx = (currentIdx + 1) % profiles.length
         profilesControl.setProfile(profiles[nextIdx])
+    }
+
+    onArrowClicked: {
+        var pageHeight = batteryPage.contentItemHeight + batteryPage.headerHeight;
+        fullRep.togglePage(fullRep.defaultInitialWidth, pageHeight, batteryPage);
     }
 }
