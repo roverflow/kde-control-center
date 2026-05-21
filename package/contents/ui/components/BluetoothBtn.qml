@@ -8,41 +8,30 @@ import org.kde.bluezqt as BluezQt
 import "../lib" as Lib
 import "../js/funcs.js" as Funcs
 
-
 Lib.CardButton {
-    id:bt
-    
-    // BLUETOOTH
-    property QtObject btManager : BluezQt.Manager
-    property alias sourceColor: icon.sourceColor
-    visible: true
-    showContentOverflowIndicator: isLongButton
+    id: bt
 
-    Layout.fillWidth: true
-    Layout.fillHeight: true
+    property QtObject btManager: BluezQt.Manager
 
-    heading: isLongButton ? "Bluetooth" : ""
-    
+    splitAction: true
+    isLongButton: true
+
+    heading: i18n("Bluetooth")
     title: Funcs.getBtDevice().message
+
     Lib.Icon {
         id: icon
         anchors.fill: parent
-        fullSizeIcon: bt.fullSizeIcon
         source: {
-            if (BluezQt.Manager.connectedDevices.length > 0) {
-                return "network-bluetooth-activated-symbolic";
-            }
-            if (!BluezQt.Manager.bluetoothOperational) {
-                return "network-bluetooth-inactive-symbolic";
-            }
-            return "network-bluetooth-symbolic";
+            if (BluezQt.Manager.connectedDevices.length > 0)
+                return "network-bluetooth-activated-symbolic"
+            if (!BluezQt.Manager.bluetoothOperational)
+                return "network-bluetooth-inactive-symbolic"
+            return "network-bluetooth-symbolic"
         }
-        selected:  Funcs.getBtDevice().active
-        enableQuickAction: (isLongButton || showTitle) && root.enableQuickActions
+        selected: Funcs.getBtDevice().active
+    }
 
-        onQuickActionTriggered: Funcs.toggleBluetooth();
-    }
-    onClicked: {
-       fullRep.togglePage(fullRep.defaultInitialWidth, 400, bluetoothPage);
-    }
+    onToggled: Funcs.toggleBluetooth()
+    onArrowClicked: fullRep.togglePage(fullRep.defaultInitialWidth, 400, bluetoothPage)
 }

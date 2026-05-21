@@ -11,52 +11,14 @@ ColumnLayout {
     anchors.margins: root.largeSpacing
     spacing: root.largeSpacing
 
-    // -- Toggle Grid
-    GridLayout {
-        id: toggleGrid
-        columns: 4
-        columnSpacing: root.mediumSpacing
-        rowSpacing: root.mediumSpacing
+    // -- Header Bar
+    Components.HeaderBar {}
+
+    // -- Separator
+    Rectangle {
         Layout.fillWidth: true
-
-        Components.NetworkBtn {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80 * root.scale
-        }
-        Components.BluetoothBtn {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80 * root.scale
-        }
-        Components.DndButton {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80 * root.scale
-        }
-        Components.KDEConnect {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80 * root.scale
-        }
-
-        Components.NightLight {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80 * root.scale
-        }
-        Components.ColorSchemeSwitcher {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80 * root.scale
-        }
-        Components.ScreenshotBtn {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80 * root.scale
-            visible: root.showScreenshot
-        }
-        Components.CommandRun {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80 * root.scale
-            visible: root.showCmd1
-            icon: root.cmdIcon1
-            command: root.cmdRun1
-            title: root.cmdTitle1
-        }
+        Layout.preferredHeight: 1
+        color: root.borderColor
     }
 
     // -- Sliders
@@ -64,25 +26,69 @@ ColumnLayout {
         spacing: root.mediumSpacing
         Layout.fillWidth: true
 
-        Components.BrightnessSlider {
+        Components.Volume {
             Layout.fillWidth: true
             Layout.preferredHeight: 36 * root.scale
         }
-        Components.Volume {
+        Components.MicVolume {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 36 * root.scale
+        }
+        Components.BrightnessSlider {
             Layout.fillWidth: true
             Layout.preferredHeight: 36 * root.scale
         }
     }
 
-    // -- Power
-    RowLayout {
+    // -- Separator
+    Rectangle {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 1
+        color: root.borderColor
+    }
+
+    // -- Split-Action Toggle Grid (2 columns)
+    GridLayout {
+        id: toggleGrid
+        columns: 2
+        columnSpacing: root.mediumSpacing
+        rowSpacing: root.mediumSpacing
         Layout.fillWidth: true
 
-        Item { Layout.fillWidth: true }
+        Components.NetworkBtn {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52 * root.scale
+        }
+        Components.BluetoothBtn {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52 * root.scale
+        }
 
-        Components.SystemActions {
-            Layout.preferredWidth: 36 * root.scale
-            Layout.preferredHeight: 36 * root.scale
+        Components.DndButton {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52 * root.scale
+        }
+        Components.NightLight {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52 * root.scale
+        }
+
+        Components.ColorSchemeSwitcher {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52 * root.scale
+        }
+        Components.PowerProfile {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52 * root.scale
+        }
+
+        Components.CaffeineToggle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52 * root.scale
+        }
+        Components.KeyboardBacklight {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 52 * root.scale
         }
     }
 }
