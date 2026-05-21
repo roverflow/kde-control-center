@@ -28,15 +28,15 @@ ColumnLayout {
 
         Components.Volume {
             Layout.fillWidth: true
-            Layout.preferredHeight: 36 * root.scale
+            Layout.preferredHeight: 44 * root.scale
         }
         Components.MicVolume {
             Layout.fillWidth: true
-            Layout.preferredHeight: 36 * root.scale
+            Layout.preferredHeight: 44 * root.scale
         }
         Components.BrightnessSlider {
             Layout.fillWidth: true
-            Layout.preferredHeight: 36 * root.scale
+            Layout.preferredHeight: 44 * root.scale
         }
     }
 
@@ -57,38 +57,38 @@ ColumnLayout {
 
         Components.NetworkBtn {
             Layout.fillWidth: true
-            Layout.preferredHeight: 52 * root.scale
+            Layout.preferredHeight: 62 * root.scale
         }
         Components.BluetoothBtn {
             Layout.fillWidth: true
-            Layout.preferredHeight: 52 * root.scale
+            Layout.preferredHeight: 62 * root.scale
         }
 
         Components.DndButton {
             Layout.fillWidth: true
-            Layout.preferredHeight: 52 * root.scale
+            Layout.preferredHeight: 62 * root.scale
         }
         Components.NightLight {
             Layout.fillWidth: true
-            Layout.preferredHeight: 52 * root.scale
+            Layout.preferredHeight: 62 * root.scale
         }
 
         Components.ColorSchemeSwitcher {
             Layout.fillWidth: true
-            Layout.preferredHeight: 52 * root.scale
+            Layout.preferredHeight: 62 * root.scale
         }
         Components.PowerProfile {
             Layout.fillWidth: true
-            Layout.preferredHeight: 52 * root.scale
+            Layout.preferredHeight: 62 * root.scale
         }
 
         Components.CaffeineToggle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 52 * root.scale
+            Layout.preferredHeight: 62 * root.scale
         }
         Components.KeyboardBacklight {
             Layout.fillWidth: true
-            Layout.preferredHeight: 52 * root.scale
+            Layout.preferredHeight: 62 * root.scale
         }
     }
 }

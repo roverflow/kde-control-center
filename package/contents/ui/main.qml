@@ -13,21 +13,21 @@ PlasmoidItem {
 
     // -- Scale
     property var scale: Plasmoid.configuration.scale * 1 / 100
-    property int fullRepWidth: 400 * scale
-    property int fullRepHeight: 600 * scale
+    property int fullRepWidth: 480 * scale
+    property int fullRepHeight: 700 * scale
 
     // -- Spacing (8px base grid)
-    property int largeSpacing: 12 * scale
-    property int mediumSpacing: 8 * scale
-    property int smallSpacing: 4 * scale
+    property int largeSpacing: 16 * scale
+    property int mediumSpacing: 12 * scale
+    property int smallSpacing: 6 * scale
     property int buttonMargin: 4 * scale
     property int buttonHeight: 48 * scale
     property int itemSpacing: 8
 
     // -- Typography (Geist scale)
-    property int largeFontSize: 14 * scale
-    property int mediumFontSize: 12 * scale
-    property int smallFontSize: 11 * scale
+    property int largeFontSize: 16 * scale
+    property int mediumFontSize: 14 * scale
+    property int smallFontSize: 12 * scale
 
     // -- Surfaces (Vercel Geist dark)
     property color surfaceColor: "#111111"

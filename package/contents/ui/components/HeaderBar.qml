@@ -12,7 +12,7 @@ Item {
     id: headerBar
 
     Layout.fillWidth: true
-    Layout.preferredHeight: 32 * root.scale
+    Layout.preferredHeight: 40 * root.scale
 
     readonly property bool hasBattery: batteryPage && batteryPage.batteryControl && batteryPage.batteryControl.hasBatteries
     readonly property int batteryPercent: hasBattery ? batteryPage.batteryControl.percent : 0
@@ -46,8 +46,8 @@ Item {
                 spacing: root.smallSpacing
 
                 BatteryIcon {
-                    Layout.preferredWidth: 16 * root.scale
-                    Layout.preferredHeight: 16 * root.scale
+                    Layout.preferredWidth: 20 * root.scale
+                    Layout.preferredHeight: 20 * root.scale
                     percent: headerBar.batteryPercent
                     hasBattery: headerBar.hasBattery
                     pluggedIn: headerBar.batteryPluggedIn
@@ -67,10 +67,10 @@ Item {
         PlasmaComponents.ToolButton {
             visible: root.showScreenshot
             icon.name: "camera-photo-symbolic"
-            icon.width: 16 * root.scale
-            icon.height: 16 * root.scale
-            Layout.preferredWidth: 28 * root.scale
-            Layout.preferredHeight: 28 * root.scale
+            icon.width: 20 * root.scale
+            icon.height: 20 * root.scale
+            Layout.preferredWidth: 34 * root.scale
+            Layout.preferredHeight: 34 * root.scale
             onClicked: {
                 if (root.hideWidgetBeforeScreenshot) root.expanded = false
                 headerExecutable.exec(root.screenshotCommand)
@@ -80,30 +80,30 @@ Item {
 
         PlasmaComponents.ToolButton {
             icon.name: "configure"
-            icon.width: 16 * root.scale
-            icon.height: 16 * root.scale
-            Layout.preferredWidth: 28 * root.scale
-            Layout.preferredHeight: 28 * root.scale
+            icon.width: 20 * root.scale
+            icon.height: 20 * root.scale
+            Layout.preferredWidth: 34 * root.scale
+            Layout.preferredHeight: 34 * root.scale
             onClicked: headerExecutable.exec("systemsettings")
             PlasmaComponents.ToolTip { text: i18n("System Settings") }
         }
 
         PlasmaComponents.ToolButton {
             icon.name: "system-lock-screen"
-            icon.width: 16 * root.scale
-            icon.height: 16 * root.scale
-            Layout.preferredWidth: 28 * root.scale
-            Layout.preferredHeight: 28 * root.scale
+            icon.width: 20 * root.scale
+            icon.height: 20 * root.scale
+            Layout.preferredWidth: 34 * root.scale
+            Layout.preferredHeight: 34 * root.scale
             onClicked: headerExecutable.exec("loginctl lock-session")
             PlasmaComponents.ToolTip { text: i18n("Lock Screen") }
         }
 
         PlasmaComponents.ToolButton {
             icon.name: "system-shutdown"
-            icon.width: 16 * root.scale
-            icon.height: 16 * root.scale
-            Layout.preferredWidth: 28 * root.scale
-            Layout.preferredHeight: 28 * root.scale
+            icon.width: 20 * root.scale
+            icon.height: 20 * root.scale
+            Layout.preferredWidth: 34 * root.scale
+            Layout.preferredHeight: 34 * root.scale
             onClicked: fullRep.togglePage(300, 400, systemSessionActionsPage)
             PlasmaComponents.ToolTip { text: i18n("Power / Session") }
         }
