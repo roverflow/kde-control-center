@@ -28,15 +28,15 @@ ColumnLayout {
 
         Components.Volume {
             Layout.fillWidth: true
-            Layout.preferredHeight: 44 * root.scale
+            Layout.preferredHeight: 48 * root.scale
         }
         Components.MicVolume {
             Layout.fillWidth: true
-            Layout.preferredHeight: 44 * root.scale
+            Layout.preferredHeight: 48 * root.scale
         }
         Components.BrightnessSlider {
             Layout.fillWidth: true
-            Layout.preferredHeight: 44 * root.scale
+            Layout.preferredHeight: 48 * root.scale
         }
     }
 

@@ -15,12 +15,7 @@ Item {
     Layout.fillWidth: true
 
     property var mainScreen
-    property bool disableBrightnessUpdate: true
     property int selectedDisplay: 0
-
-    property bool canTogglePage: false
-    property bool flat: false
-    property bool showTitle: false
 
     ScreenBrightnessControl {
         id: sbControl
@@ -50,7 +45,6 @@ Item {
             } else {
                 brightnessControl.mainScreen = screenBrightnessInfo[0];
             }
-            sliderLoader.active = true;
         }
         function onDataChanged() { update(); }
         function onModelReset() { update(); }
@@ -61,60 +55,24 @@ Item {
 
     visible: sbControl.isBrightnessAvailable && root.showBrightness && mainScreen !== null && mainScreen !== undefined
 
-    ColumnLayout {
+    Lib.Slider {
         anchors.fill: parent
-        spacing: 2
 
-        PlasmaComponents.ComboBox {
-            id: displayPicker
-            Layout.fillWidth: true
-            Layout.preferredHeight: 24 * root.scale
-            visible: displayModelConnections.screenBrightnessInfo.length > 1
-            model: displayModelConnections.screenBrightnessInfo.map(d => d.label)
-            currentIndex: brightnessControl.selectedDisplay
-            font.pixelSize: root.smallFontSize
-            onActivated: index => {
-                brightnessControl.selectedDisplay = index;
-                brightnessControl.mainScreen = displayModelConnections.screenBrightnessInfo[index];
-            }
+        source: "brightness-high-symbolic"
+        secondaryTitle: mainScreen ? Math.round((mainScreen.brightness / mainScreen.maxBrightness) * 100) + "%" : "0%"
+
+        from: mainScreen ? (mainScreen.maxBrightness > 100 ? 1 : 0) : 0
+        to: mainScreen ? mainScreen.maxBrightness : 100
+        value: mainScreen ? mainScreen.brightness : 0
+        stepSize: mainScreen ? mainScreen.maxBrightness / 100 : 1
+
+        onMoved: {
+            if (mainScreen) sbControl.setBrightness(mainScreen.displayName, value)
         }
 
-        Loader {
-            id: sliderLoader
-            active: false
-            sourceComponent: sliderComponent
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
-    }
-
-    Component {
-        id: sliderComponent
-        Lib.Slider {
-            readonly property int brightnessMin: (mainScreen.maxBrightness > 100 ? 1 : 0)
-
-            title: mainScreen.label
-            source: "brightness-high-symbolic"
-            secondaryTitle: Math.round((mainScreen.brightness / mainScreen.maxBrightness)*100) + "%"
-
-            canTogglePage: brightnessControl.canTogglePage
-            showTitle: root.brightness_widget_title
-            thinSlider: root.brightness_widget_thin
-            flat: root.brightness_widget_flat || brightnessControl.flat
-
-            from: brightnessMin
-            to: mainScreen.maxBrightness
-            value: mainScreen.brightness
-            stepSize: mainScreen.maxBrightness / 100
-
-            onMoved: {
-                sbControl.setBrightness(mainScreen.displayName, value);
-            }
-
-            onClicked: {
-                var pageHeight = brightnessControlPage.contentItemHeight + brightnessControlPage.headerHeight;
-                fullRep.togglePage(fullRep.defaultInitialWidth, pageHeight, brightnessControlPage);
-            }
+        onClicked: {
+            var pageHeight = brightnessControlPage.contentItemHeight + brightnessControlPage.headerHeight
+            fullRep.togglePage(fullRep.defaultInitialWidth, pageHeight, brightnessControlPage)
         }
     }
 }
