@@ -1,0 +1,16 @@
+#!/bin/bash
+
+PACKAGE_DIR="package"
+PLASMA_MIN_VER="6.0"
+TAG="plasma-${PLASMA_MIN_VER//./-}"
+
+usage() {
+	echo "Usage: sh ./build"
+	echo "Builds a .zip/.plasmoid package for KDE Store upload."
+}
+
+case "${1:-}" in
+	-h|--help) usage; exit 0 ;;
+	"") python3 ./packager --dir "$PACKAGE_DIR" build --tag "$TAG" ;;
+	*) echo "Unknown option: $1"; usage; exit 1 ;;
+esac

@@ -1,0 +1,24 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Authors": [
+      {
+        "Email": "roverflow5@gmail.com",
+        "Name": "roverflow"
+      }
+    ],
+    "Category": "Utilities",
+    "Description": "A modern control station for plasma",
+    "Icon": "configure-toolbars",
+    "Id": "QtControlCenter",
+    "License": "GPLv3",
+    "Name": "Qt Control Center",
+    "ServiceTypes": ["Plasma/Applet"],
+    "Version": "0.0.1",
+    "Website": ""
+  },
+  "X-Plasma-API-Minimum-Version": "6.0",
+  "X-Plasma-MainScript": "ui/main.qml",
+  "X-Plasma-NotificationArea": "true",
+  "X-Plasma-Provides": "org.kde.plasma.multimediacontrols,org.kde.plasma.powermanagement,org.kde.plasma.notifications"
+}

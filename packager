@@ -1,0 +1,294 @@
+#!/usr/bin/env python3
+"""KDE Plasma applet packager — build, install, uninstall, test."""
+
+import argparse
+import glob
+import json
+import logging
+import os
+import re
+import shutil
+import subprocess
+import sys
+
+logger = logging.getLogger("packager")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler())
+
+SOURCE_DIR_DEFAULT = "package"
+PLASMA_MIN_VER = "6.0"
+FILENAME_TAG = f"plasma{PLASMA_MIN_VER.replace('.', '_')}"
+
+
+# ---------------------------------------------------------------------------
+# Terminal colors
+# ---------------------------------------------------------------------------
+class TC:
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+    GRAY = "\033[90m"
+    RED = "\033[91m"
+    GREEN = "\033[92m"
+    ORANGE = "\033[33m"
+
+    @staticmethod
+    def strip(text):
+        return re.sub(r"\033\[[\d;]+m", "", text)
+
+
+def _echo(color, *args):
+    line = color + " ".join(args) + TC.RESET
+    if not sys.stdout.isatty():
+        line = TC.strip(line)
+    print(line)
+
+
+def echo_gray(*a):    _echo(TC.GRAY, *a)
+def echo_green(*a):   _echo(TC.GREEN, *a)
+def echo_warning(*a): _echo(TC.ORANGE, *a)
+def echo_error(*a):   _echo(TC.RED + TC.BOLD, *a)
+
+
+# ---------------------------------------------------------------------------
+# Utilities
+# ---------------------------------------------------------------------------
+def is_command_installed(name):
+    return shutil.which(name) is not None
+
+
+def require_command(name, install_hint=None):
+    if not is_command_installed(name):
+        echo_error(f"[error] '{name}' not found.")
+        if install_hint:
+            echo_error(f"[error] {install_hint}")
+        sys.exit(1)
+    return name
+
+
+# ---------------------------------------------------------------------------
+# KPackage
+# ---------------------------------------------------------------------------
+class KPackage:
+    def __init__(self, source_dir="package", build_tag=""):
+        self.source_dir = source_dir
+        self.build_tag = f"-{build_tag}" if build_tag else ""
+        self.metadata_path = os.path.join(source_dir, "metadata.json")
+
+        if not os.path.exists(self.metadata_path):
+            echo_error(f"[error] metadata.json not found in '{source_dir}'")
+            sys.exit(1)
+
+        self._parse_metadata()
+
+    def _parse_metadata(self):
+        with open(self.metadata_path) as f:
+            meta = json.load(f)
+
+        self.service_type = meta.get("KPackageStructure")
+        if not self.service_type:
+            echo_error("[error] metadata.json is missing KPackageStructure")
+            sys.exit(1)
+
+        kp = meta.get("KPlugin", {})
+        self.namespace = kp["Id"]
+        self.name = self.namespace.split(".")[-1]
+        self.version = kp.get("Version", "")
+
+        authors = kp.get("Authors", [{}])
+        self.author = authors[0].get("Name", "") if authors else ""
+        self.author_email = authors[0].get("Email", "") if authors else ""
+        self.website = kp.get("Website", "")
+        self.description = kp.get("Description", "")
+
+        self.build_ext = "plasmoid" if self.service_type == "Plasma/Applet" else "zip"
+
+    def print_metadata(self):
+        logger.info("Namespace:  %s", self.namespace)
+        logger.info("Name:       %s", self.name)
+        logger.info("Version:    %s", self.version)
+        logger.info("Author:     %s", self.author)
+        logger.info("Type:       %s", self.service_type)
+        logger.info("")
+
+    # -- Install / Uninstall ------------------------------------------------
+
+    def install(self, restart=True):
+        kpt = require_command("kpackagetool6")
+
+        p = subprocess.run(
+            [kpt, "--type", self.service_type, "--show", self.namespace],
+            capture_output=True,
+        )
+        already_installed = p.returncode == 0
+
+        if already_installed:
+            proc = subprocess.run(
+                [kpt, "--type", self.service_type, "--upgrade", self.source_dir],
+                capture_output=True,
+            )
+            if proc.returncode != 0:
+                echo_error("[error] Failed to upgrade package")
+                print(proc.stderr.decode())
+                sys.exit(1)
+            if proc.stdout.strip():
+                print(proc.stdout.decode().strip())
+
+            if restart:
+                kstart = require_command("kstart")
+                subprocess.call([kstart, "--", "plasmashell", "--replace"])
+        else:
+            subprocess.call(
+                [kpt, "--type", self.service_type, "--install", self.source_dir]
+            )
+
+    def uninstall(self):
+        kpt = require_command("kpackagetool6")
+        subprocess.call(
+            [kpt, "--type", self.service_type, "--remove", self.source_dir]
+        )
+
+    # -- Test ---------------------------------------------------------------
+
+    def test(self, *args, dpi=1, **kwargs):
+        require_command("plasmoidviewer", "Install plasma-sdk")
+        env = os.environ.copy()
+        if dpi != 1:
+            env["QT_DEVICE_PIXEL_RATIO"] = str(dpi)
+
+        proc_args = list(args)
+        for key, value in kwargs.items():
+            flag = f"-{key}" if len(key) == 1 else f"--{key}"
+            proc_args += [flag, value]
+
+        subprocess.call(
+            ["plasmoidviewer", "-a", self.source_dir, *proc_args], env=env
+        )
+
+    def test_desktop(self, **kw):
+        self.test(l="floating", f="planar", **kw)
+
+    def test_horizontal(self, **kw):
+        self.test(l="topedge", f="horizontal", **kw)
+
+    def test_vertical(self, **kw):
+        self.test(l="leftedge", f="vertical", **kw)
+
+    # -- Build --------------------------------------------------------------
+
+    def build_zip(self, dryrun=False):
+        filename = f"{self.name}-v{self.version}{self.build_tag}"
+        filename_ext = f"{filename}.{self.build_ext}"
+
+        logger.info("Output: %s", filename_ext)
+        logger.info("")
+
+        for old in glob.glob(f"*.{self.build_ext}"):
+            echo_gray(f"Removing old package: {old}")
+            if not dryrun:
+                os.remove(old)
+
+        zip_logger = logging.getLogger("build")
+        zip_logger.setLevel(logging.DEBUG)
+        zip_logger.addHandler(logging.StreamHandler())
+
+        shutil.make_archive(filename, "zip", self.source_dir,
+                            dry_run=dryrun, logger=zip_logger)
+
+        if not dryrun and self.build_ext != "zip":
+            os.rename(f"{filename}.zip", filename_ext)
+
+        if not dryrun:
+            for cmd in ["md5sum", "sha256sum"]:
+                if is_command_installed(cmd):
+                    p = subprocess.run([cmd, filename_ext], capture_output=True)
+                    checksum = p.stdout.decode().split()[0]
+                    echo_gray(f"[{cmd.replace('sum', '')}] {checksum}")
+
+
+# ---------------------------------------------------------------------------
+# CLI subcommands
+# ---------------------------------------------------------------------------
+def cmd_build(pkg, args):
+    pkg.print_metadata()
+    pkg.build_zip(dryrun=args.dryrun)
+
+
+def cmd_install(pkg, args):
+    pkg.print_metadata()
+    pkg.install(restart=args.restart)
+
+
+def cmd_uninstall(pkg, args):
+    pkg.print_metadata()
+    pkg.uninstall()
+
+
+def cmd_test(pkg, args):
+    if args.vertical:
+        pkg.test_vertical(dpi=args.dpi)
+    elif args.panel:
+        pkg.test_horizontal(dpi=args.dpi)
+    elif args.desktop:
+        pkg.test_desktop(dpi=args.dpi)
+    else:
+        pkg.test(dpi=args.dpi)
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+def main():
+    parser = argparse.ArgumentParser(
+        prog="packager",
+        description="KDE Plasma applet packager — build, install, uninstall, test.",
+    )
+    parser.add_argument(
+        "--dir", dest="source_dir", default=SOURCE_DIR_DEFAULT,
+        help="Path to the folder containing metadata.json",
+    )
+
+    sub = parser.add_subparsers(dest="command")
+
+    # build
+    p_build = sub.add_parser("build", help="Package as .plasmoid for KDE Store")
+    p_build.set_defaults(func=cmd_build)
+    p_build.add_argument("--dryrun", action="store_true", default=False)
+    p_build.add_argument("--tag", dest="build_tag", default=FILENAME_TAG)
+
+    # install
+    p_install = sub.add_parser("install", help="Install/upgrade locally via kpackagetool6")
+    p_install.set_defaults(func=cmd_install)
+    p_install.add_argument(
+        "--no-restart", dest="restart", action="store_false", default=True,
+        help="Do not restart plasmashell after upgrading",
+    )
+
+    # uninstall
+    p_uninstall = sub.add_parser("uninstall", help="Remove local installation")
+    p_uninstall.set_defaults(func=cmd_uninstall)
+
+    # test
+    p_test = sub.add_parser("test", help="Launch in plasmoidviewer")
+    p_test.set_defaults(func=cmd_test)
+    p_test.add_argument("--dpi", type=int, default=1)
+    p_test.add_argument("-d", "--desktop", action="store_true")
+    p_test.add_argument("-p", "--panel", action="store_true")
+    p_test.add_argument("-v", "--vertical", action="store_true")
+
+    args = parser.parse_args()
+
+    if not hasattr(args, "func"):
+        parser.print_help()
+        return
+
+    build_tag = getattr(args, "build_tag", FILENAME_TAG)
+    pkg = KPackage(source_dir=args.source_dir, build_tag=build_tag)
+
+    try:
+        args.func(pkg, args)
+    except KeyboardInterrupt:
+        pass
+
+
+if __name__ == "__main__":
+    main()
