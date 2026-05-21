@@ -46,135 +46,157 @@ Card {
         }
     }
 
+    PlasmaComponents.Label {
+        id: titleLabel
+        visible: false
+    }
+
     RowLayout {
         anchors.fill: parent
-        anchors.margins: root.smallSpacing
+        anchors.margins: root.mediumSpacing
         spacing: root.mediumSpacing
 
-        Kirigami.Icon {
-            id: icon
-            source: sliderComp.source
-            visible: !sliderComp.useIconButton
-            Layout.preferredHeight: 16 * root.scale
-            Layout.preferredWidth: Layout.preferredHeight
-            color: root.textSecondary
+        // -- Icon (fixed 28px bounding box)
+        Item {
+            Layout.preferredWidth: 28 * root.scale
+            Layout.minimumWidth: 28 * root.scale
+            Layout.preferredHeight: 28 * root.scale
+            Layout.alignment: Qt.AlignVCenter
+
+            Kirigami.Icon {
+                id: icon
+                anchors.centerIn: parent
+                width: 22 * root.scale
+                height: width
+                source: sliderComp.source
+                visible: !sliderComp.useIconButton
+                color: root.textSecondary
+            }
+
+            PlasmaComponents.ToolButton {
+                id: iconButton
+                anchors.centerIn: parent
+                width: 28 * root.scale
+                height: width
+                visible: sliderComp.useIconButton
+                icon.name: sliderComp.source
+                icon.width: 22 * root.scale
+                icon.height: 22 * root.scale
+                onClicked: sliderComp.actionButtonClicked()
+            }
         }
 
-        PlasmaComponents.ToolButton {
-            id: iconButton
-            visible: sliderComp.useIconButton
-            icon.name: sliderComp.source
-            Layout.preferredHeight: 20 * root.scale
-            Layout.preferredWidth: Layout.preferredHeight
-            onClicked: sliderComp.actionButtonClicked()
-        }
-
+        // -- Slider track (fills remaining space)
         Loader {
             id: sliderLoader
             sourceComponent: root.usePlasmaSliders ? plasmaSlider : customSlider
             Layout.fillWidth: true
+            Layout.minimumWidth: 100 * root.scale
+            Layout.alignment: Qt.AlignVCenter
             onLoaded: { sliderLoader.item.value = sliderComp.value; }
         }
 
+        // -- Percentage label (fixed 44px right-anchored)
         PlasmaComponents.Label {
             id: secondaryTitleLabel
             visible: root.showPercentage
+            Layout.preferredWidth: 44 * root.scale
+            Layout.minimumWidth: 44 * root.scale
+            Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+            horizontalAlignment: Text.AlignRight
             font.pixelSize: root.smallFontSize
-            font.weight: Font.Normal
+            font.weight: Font.Medium
             color: root.textSecondary
-            Layout.alignment: Qt.AlignRight
         }
 
-        PlasmaComponents.Label {
-            id: titleLabel
-            visible: false
-        }
-
-        Component {
-            id: customSlider
-
-            Slider {
-                id: slider
-                Layout.fillWidth: true
-                from: sliderComp.from
-                to: sliderComp.to
-                stepSize: sliderComp.stepSize
-                snapMode: Slider.SnapAlways
-
-                background: Rectangle {
-                    x: slider.leftPadding
-                    y: slider.topPadding + slider.availableHeight / 2 - height / 2
-                    implicitWidth: 200
-                    implicitHeight: 4
-                    width: slider.availableWidth
-                    height: implicitHeight
-                    radius: 2
-                    color: root.surfaceActive
-
-                    Rectangle {
-                        width: (value - from) / (to - from) * (slider.width - handle.width) + handle.width
-                        height: parent.height
-                        color: highlightColor
-                        radius: 2
-                    }
-                }
-
-                handle: Rectangle {
-                    id: handle
-                    x: slider.leftPadding + slider.visualPosition * (slider.availableWidth - width)
-                    y: slider.topPadding + slider.availableHeight / 2 - height / 2
-                    implicitWidth: 14
-                    implicitHeight: 14
-                    radius: 7
-                    color: slider.pressed ? "#E0E0E0" : "#FFFFFF"
-                    border.color: root.textMuted
-                    border.width: 1
-
-                    Behavior on color { ColorAnimation { duration: 100 } }
-                }
-
-                WheelHandler {
-                    orientation: Qt.Vertical | Qt.Horizontal
-                    property int wheelDelta: 0
-                    acceptedButtons: Qt.NoButton
-                    acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-                    onWheel: wheel => {
-                        const lastValue = slider.value
-                        const delta = (wheel.angleDelta.y || -wheel.angleDelta.x) * (wheel.inverted ? -1 : 1)
-                        wheelDelta += delta;
-                        while (wheelDelta >= 120) {
-                            wheelDelta -= 120;
-                            slider.increase();
-                        }
-                        while (wheelDelta <= -120) {
-                            wheelDelta += 120;
-                            slider.decrease();
-                        }
-                        if (lastValue !== slider.value) {
-                            slider.moved();
-                        }
-                    }
-                }
-            }
-        }
-
-        Component {
-            id: plasmaSlider
-            PlasmaComponents.Slider {
-                Layout.fillWidth: true
-                from: sliderComp.from
-                to: sliderComp.to
-                stepSize: sliderComp.stepSize
-                snapMode: Slider.SnapAlways
-            }
-        }
-
+        // -- Arrow button (optional, fixed width)
         PlasmaComponents.ToolButton {
             visible: sliderComp.canTogglePage
             icon.name: "arrow-right"
-            Layout.preferredHeight: 16 * root.scale
-            Layout.preferredWidth: Layout.preferredHeight
+            icon.width: 16 * root.scale
+            icon.height: 16 * root.scale
+            Layout.preferredWidth: 22 * root.scale
+            Layout.preferredHeight: 22 * root.scale
+            Layout.minimumWidth: 22 * root.scale
+            Layout.alignment: Qt.AlignVCenter
             onClicked: sliderComp.clicked()
+        }
+    }
+
+    Component {
+        id: customSlider
+
+        Slider {
+            id: slider
+            from: sliderComp.from
+            to: sliderComp.to
+            stepSize: sliderComp.stepSize
+            snapMode: Slider.SnapAlways
+
+            background: Rectangle {
+                x: slider.leftPadding
+                y: slider.topPadding + slider.availableHeight / 2 - height / 2
+                implicitWidth: 200
+                implicitHeight: 6
+                width: slider.availableWidth
+                height: implicitHeight
+                radius: 3
+                color: root.surfaceActive
+
+                Rectangle {
+                    width: (value - from) / (to - from) * (slider.width - handle.width) + handle.width
+                    height: parent.height
+                    color: highlightColor
+                    radius: 3
+                }
+            }
+
+            handle: Rectangle {
+                id: handle
+                x: slider.leftPadding + slider.visualPosition * (slider.availableWidth - width)
+                y: slider.topPadding + slider.availableHeight / 2 - height / 2
+                implicitWidth: 16
+                implicitHeight: 16
+                radius: 8
+                color: slider.pressed ? "#E0E0E0" : "#FFFFFF"
+                border.color: root.textMuted
+                border.width: 1
+
+                Behavior on color { ColorAnimation { duration: 100 } }
+            }
+
+            WheelHandler {
+                orientation: Qt.Vertical | Qt.Horizontal
+                property int wheelDelta: 0
+                acceptedButtons: Qt.NoButton
+                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                onWheel: wheel => {
+                    const lastValue = slider.value
+                    const delta = (wheel.angleDelta.y || -wheel.angleDelta.x) * (wheel.inverted ? -1 : 1)
+                    wheelDelta += delta;
+                    while (wheelDelta >= 120) {
+                        wheelDelta -= 120;
+                        slider.increase();
+                    }
+                    while (wheelDelta <= -120) {
+                        wheelDelta += 120;
+                        slider.decrease();
+                    }
+                    if (lastValue !== slider.value) {
+                        slider.moved();
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: plasmaSlider
+        PlasmaComponents.Slider {
+            from: sliderComp.from
+            to: sliderComp.to
+            stepSize: sliderComp.stepSize
+            snapMode: Slider.SnapAlways
         }
     }
 }
