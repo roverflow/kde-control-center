@@ -8,6 +8,7 @@ import org.kde.kirigami as Kirigami
 Card {
     id: cardButton
     cornerRadius: 8
+    noMargins: true
 
     default property alias content: iconContainer.data
     property alias title: titleLabel.text
@@ -51,8 +52,9 @@ Card {
 
                 Item {
                     id: iconContainer
-                    Layout.preferredWidth: 22 * root.scale
-                    Layout.preferredHeight: 22 * root.scale
+                    Layout.preferredWidth: 28 * root.scale
+                    Layout.minimumWidth: 28 * root.scale
+                    Layout.preferredHeight: 28 * root.scale
                     Layout.alignment: Qt.AlignVCenter
                 }
 
@@ -69,7 +71,7 @@ Card {
                         font.weight: Font.DemiBold
                         elide: Text.ElideRight
                         visible: text !== ""
-                        color: root.textPrimary
+                        color: cardButton.active ? "#FFFFFF" : root.textPrimary
                     }
 
                     PlasmaComponents.Label {
@@ -79,7 +81,7 @@ Card {
                         font.weight: Font.Normal
                         elide: Text.ElideMiddle
                         visible: text !== "" && showTitle
-                        color: root.textSecondary
+                        color: cardButton.active ? Qt.rgba(1, 1, 1, 0.75) : root.textSecondary
                     }
                 }
             }
@@ -92,14 +94,14 @@ Card {
             Layout.fillHeight: true
             Layout.topMargin: root.mediumSpacing
             Layout.bottomMargin: root.mediumSpacing
-            color: root.borderColor
+            color: cardButton.active ? Qt.rgba(1, 1, 1, 0.2) : root.borderColor
         }
 
         // Right zone: arrow button (detail page)
         MouseArea {
             id: rightZone
             visible: splitAction
-            Layout.preferredWidth: 32 * root.scale
+            Layout.preferredWidth: 36 * root.scale
             Layout.fillHeight: true
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
@@ -112,14 +114,14 @@ Card {
             Rectangle {
                 anchors.fill: parent
                 radius: cardButton.cornerRadius
-                color: rightZone.pressed ? root.surfaceActive : rightZone.containsMouse ? root.surfaceHover : "transparent"
+                color: rightZone.pressed ? Qt.rgba(1,1,1,0.1) : rightZone.containsMouse ? Qt.rgba(1,1,1,0.05) : "transparent"
 
                 Kirigami.Icon {
                     anchors.centerIn: parent
-                    width: 14 * root.scale
+                    width: 16 * root.scale
                     height: width
                     source: "arrow-right"
-                    color: root.textSecondary
+                    color: cardButton.active ? "#FFFFFF" : root.textSecondary
                 }
             }
         }

@@ -21,6 +21,7 @@ Lib.CardButton {
 
     splitAction: true
     isLongButton: true
+    active: profilesControl.activeProfile === "performance"
     visible: root.showPowerProfile && profilesControl.profileChoices.length > 0
 
     property var profiles: ["balanced", "performance", "power-saver"]

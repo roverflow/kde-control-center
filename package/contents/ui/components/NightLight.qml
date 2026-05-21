@@ -15,6 +15,7 @@ Lib.CardButton {
 
     splitAction: true
     isLongButton: true
+    active: control.enabled && control.running
 
     heading: i18n("Night Light")
     title: control.enabled && control.running ? i18n("On") : i18n("Off")

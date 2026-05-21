@@ -9,6 +9,7 @@ import org.kde.kirigami as Kirigami
 Lib.CardButton {
     visible: root.showDnd
     isLongButton: true
+    active: Funcs.checkInhibition()
 
     heading: i18n("Do Not Disturb")
     title: Funcs.checkInhibition() ? i18n("Active") : i18n("Off")

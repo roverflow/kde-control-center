@@ -14,6 +14,7 @@ Rectangle {
     property bool flat: false
     property bool noMargins: false
     property int cornerRadius: 8
+    property bool active: false
 
     property var margins: cardBg.anchors
     default property alias content: dataContainer.data
@@ -21,7 +22,7 @@ Rectangle {
     property bool hovered: false
     property bool showContentOverflowIndicator: false
 
-    // Legacy compat — ignored in new design
+    // Legacy compat
     property bool smallTopMargins: false
     property bool smallBottomMargins: false
     property bool smallLeftMargins: false
@@ -46,14 +47,17 @@ Rectangle {
         id: cardBg
         anchors.fill: parent
         radius: cornerRadius
-        color: flat ? "transparent" : root.surfaceColor
+        color: {
+            if (flat) return "transparent"
+            if (active) return root.accentColor
+            return root.surfaceColor
+        }
         border.width: flat ? 0 : (root.showBorders ? 1 : 0)
-        border.color: rectangle.hovered ? root.borderStrong : root.borderColor
+        border.color: active ? root.accentColor : (rectangle.hovered ? root.borderStrong : root.borderColor)
         z: -1
 
-        Behavior on border.color {
-            ColorAnimation { duration: 150 }
-        }
+        Behavior on color { ColorAnimation { duration: 150 } }
+        Behavior on border.color { ColorAnimation { duration: 150 } }
     }
 
     Item {

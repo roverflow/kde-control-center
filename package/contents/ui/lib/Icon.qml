@@ -18,15 +18,15 @@ Item {
 
     Rectangle {
         id: rect
-        radius: 4
-        color: icon.selected ? highlightColor : sourceColor.valid ? sourceColor : root.surfaceActive
+        radius: 6
+        color: "transparent"
         anchors.fill: parent
 
         Kirigami.Icon {
             id: icon
             visible: true
             anchors.fill: parent
-            anchors.margins: fullSizeIcon ? 2 : root.smallSpacing
+            anchors.margins: 2
             anchors.centerIn: parent
             selected: false
             isMask: customIcon

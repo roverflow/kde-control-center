@@ -32,6 +32,7 @@ Lib.CardButton {
 
     splitAction: true
     isLongButton: true
+    active: (network.networkStatus.activeConnections != "") || isAirplane
 
     heading: isWifi ? i18n("Wi-Fi") : isAirplane ? i18n("Airplane mode") : i18n("Wired")
     title: Funcs.getNetworkConnectionName()

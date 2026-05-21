@@ -13,6 +13,7 @@ Lib.CardButton {
     heading: i18n("Caffeine")
     title: inhibitionControl.isManuallyInhibited ? i18n("Active") : i18n("Off")
     isLongButton: true
+    active: inhibitionControl.isManuallyInhibited
     visible: root.showCaffeine
 
     property var possibleControls: [

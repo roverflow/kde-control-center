@@ -17,6 +17,7 @@ Lib.CardButton {
 
     splitAction: true
     isLongButton: true
+    active: kbdControl.brightness > 0
     visible: root.showKeyboardBacklight && kbdControl.isBrightnessAvailable
 
     KeyboardBrightnessControl {

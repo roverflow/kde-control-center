@@ -13,6 +13,7 @@ Lib.CardButton {
 
     visible: root.showColorSwitcher
     isLongButton: true
+    active: root.isDarkTheme
 
     heading: i18n("Dark Style")
     title: root.isDarkTheme ? i18n("Active") : i18n("Inactive")

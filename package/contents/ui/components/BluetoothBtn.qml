@@ -15,6 +15,7 @@ Lib.CardButton {
 
     splitAction: true
     isLongButton: true
+    active: Funcs.getBtDevice().active
 
     heading: i18n("Bluetooth")
     title: Funcs.getBtDevice().message
