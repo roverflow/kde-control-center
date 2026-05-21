@@ -1,6 +1,7 @@
 import QtQml 2.15
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.15
 import org.kde.plasma.components as PlasmaComponents
 import org.kde.plasma.plasma5support as Plasma5Support
 import "../lib" as Lib
@@ -56,8 +57,11 @@ Item {
     visible: sbControl.isBrightnessAvailable && root.showBrightness && mainScreen !== null && mainScreen !== undefined
 
     Lib.Slider {
+        id: brightnessSlider
         anchors.fill: parent
 
+        useIconButton: true
+        canTogglePage: true
         source: "brightness-high-symbolic"
         secondaryTitle: mainScreen ? Math.round((mainScreen.brightness / mainScreen.maxBrightness) * 100) + "%" : "0%"
 
@@ -73,6 +77,35 @@ Item {
         onClicked: {
             var pageHeight = brightnessControlPage.contentItemHeight + brightnessControlPage.headerHeight
             fullRep.togglePage(fullRep.defaultInitialWidth, pageHeight, brightnessControlPage)
+        }
+
+        onActionButtonClicked: {
+            if (displayModelConnections.screenBrightnessInfo.length > 1)
+                displayMenu.open()
+        }
+    }
+
+    Menu {
+        id: displayMenu
+        y: brightnessSlider.actionButton
+           ? brightnessSlider.actionButton.mapToItem(brightnessControl, 0, brightnessSlider.actionButton.height).y
+           : 0
+        x: brightnessSlider.actionButton
+           ? brightnessSlider.actionButton.mapToItem(brightnessControl, 0, 0).x
+           : 0
+
+        Repeater {
+            model: displayModelConnections.screenBrightnessInfo
+
+            MenuItem {
+                text: modelData.label
+                checkable: true
+                checked: index === brightnessControl.selectedDisplay
+                onTriggered: {
+                    brightnessControl.selectedDisplay = index
+                    displayModelConnections.update()
+                }
+            }
         }
     }
 }

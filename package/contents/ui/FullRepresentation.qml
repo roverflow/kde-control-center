@@ -19,7 +19,7 @@ Rectangle {
 
     color: root.themeBgColor
     border.width: 1
-    border.color: Qt.rgba(1, 1, 1, 0.12)
+    border.color: Qt.rgba(1, 1, 1, 0.18)
     radius: 8
 
     Layout.preferredWidth: root.fullRepWidth

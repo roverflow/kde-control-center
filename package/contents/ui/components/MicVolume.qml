@@ -31,6 +31,7 @@ Item {
             id: slider
             flat: true
             useIconButton: true
+            canTogglePage: true
             thinSlider: true
 
             value: micControl.audioSource ? Math.round(micControl.audioSource.volume / Vol.PulseAudio.NormalVolume * 100) : 0

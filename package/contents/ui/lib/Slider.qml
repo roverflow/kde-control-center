@@ -36,6 +36,8 @@ Item {
     property bool roundedWidget: false
     property bool noMargins: false
 
+    property alias actionButton: actionToolButton
+
     Binding {
         target: sliderItem
         property: "value"
@@ -45,7 +47,7 @@ Item {
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: root.mediumSpacing
+        anchors.leftMargin: root.smallSpacing
         anchors.rightMargin: root.mediumSpacing
         spacing: root.mediumSpacing
 
@@ -67,6 +69,7 @@ Item {
             }
 
             PlasmaComponents.ToolButton {
+                id: actionToolButton
                 anchors.fill: parent
                 visible: sliderComp.useIconButton
                 icon.name: sliderComp.source
